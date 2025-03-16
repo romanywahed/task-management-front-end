@@ -1,0 +1,81 @@
+<div class="container">
+    <h2 class="title">Task Dashboard</h2>
+  
+    <!-- Filter Options -->
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <input type="text" [(ngModel)]="searchText" class="form-control" placeholder="Search tasks...">
+      </div>
+      <div class="col-md-3">
+        <select class="form-control" [(ngModel)]="statusFilter">
+          <option value="">All Status</option>
+          <option value="Pending">Pending</option>
+          <option value="Completed">Completed</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select class="form-control" [(ngModel)]="priorityFilter">
+          <option value="">All Priorities</option>
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+      </div>
+    </div>
+  
+    <!-- Task Table -->
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th (click)="sortBy('title')">Title</th>
+          <th>Description</th>
+          <th (click)="sortBy('status')">Status</th>
+          <th (click)="sortBy('priority')">Priority</th>
+          <th (click)="sortBy('dueDate')">Due Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let task of filterTasks()">
+          <td>{{ task.title }}</td>
+          <td>{{ task.description }}</td>
+          <td>
+            <span [class.completed]="task.status === 'Completed'">{{ task.status }}</span>
+          </td>
+          <td>{{ task.priority }}</td>
+          <td>{{ task.dueDate | date }}</td>
+          <td>
+            <button class="btn btn-primary btn-sm" (click)="openTaskModal(task)">Edit</button>
+            <button class="btn btn-danger btn-sm" (click)="deleteTask(task.id)">Delete</button>
+            <button class="btn btn-success btn-sm" *ngIf="task.status !== 'Completed'" (click)="markCompleted(task)">Mark Completed</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <!-- Add Task Button -->
+    <button class="btn btn-success" (click)="openTaskModal()">Add Task</button>
+  
+    <!-- Task Modal -->
+    <ng-template #taskModal let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title">Add/Edit Task</h4>
+        <button type="button" class="close" (click)="modal.dismiss()">×</button>
+      </div>
+      <div class="modal-body">
+        <input type="text" [(ngModel)]="selectedTask.title" class="form-control" placeholder="Title">
+        <textarea [(ngModel)]="selectedTask.description" class="form-control mt-2" placeholder="Description"></textarea>
+        <select [(ngModel)]="selectedTask.priority" class="form-control mt-2">
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+        <input type="date" [(ngModel)]="selectedTask.dueDate" class="form-control mt-2">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" (click)="saveTask()">Save</button>
+        <button class="btn btn-secondary" (click)="modal.dismiss()">Cancel</button>
+      </div>
+    </ng-template>
+  </div>
+  
